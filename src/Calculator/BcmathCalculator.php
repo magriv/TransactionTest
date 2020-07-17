@@ -34,6 +34,7 @@ class BcmathCalculator implements MathCalculatorInterface
     public function ceil(string $number, int $precision): string
     {
         $resultNumber = rtrim($number, '0.');
+        $hasMinus = strpos($resultNumber, '-') === 0;
         $decimalSeparatorPosition = strpos($resultNumber, '.');
         $fractionalPart = $decimalSeparatorPosition === false
             ? ''
@@ -41,6 +42,9 @@ class BcmathCalculator implements MathCalculatorInterface
 
         if (strlen($fractionalPart) > $precision) {
             $rightOperand = '0.' . str_repeat('0', $precision - 1) . '1';
+            if ($hasMinus) {
+                $rightOperand = '-' . $rightOperand;
+            }
 
             return bcadd($resultNumber, $rightOperand, $precision);
         }
